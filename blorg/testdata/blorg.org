@@ -22,7 +22,7 @@
 <header class='header'>
   <a class="logo" href="/go-org/blorg">home</a>
   <nav>
-    <a href="https://www.github.com/niklasfasching/go-org">github</a>
+    <a href="https://www.github.com/dancewhale/go-org">github</a>
   </nav>
 </header>
 #+end_src

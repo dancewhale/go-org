@@ -46,5 +46,5 @@ fuzz: build
 	go get github.com/dvyukov/go-fuzz/go-fuzz-build
 	mkdir -p fuzz fuzz/corpus
 	cp org/testdata/*.org fuzz/corpus
-	go-fuzz-build github.com/niklasfasching/go-org/org
+	go-fuzz-build github.com/dancewhale/go-org/org
 	go-fuzz -bin=./org-fuzz.zip -workdir=fuzz

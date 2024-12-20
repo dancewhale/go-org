@@ -5,7 +5,7 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/niklasfasching/go-org/org"
+	"github.com/dancewhale/go-org/org"
 )
 
 func main() {

@@ -5,7 +5,7 @@
 tag=$(git tag | tail -1)
 
 cd ../../gohugoio/hugo
-hugo_tag=$(grep github.com/niklasfasching/go-org go.sum | head -1 | awk '{print $2}')
+hugo_tag=$(grep github.com/dancewhale/go-org go.sum | head -1 | awk '{print $2}')
 
 if [[ "$tag" == "$hugo_tag" ]]; then
     echo "tag $tag already exists in hugo"
@@ -14,7 +14,7 @@ fi
 
 git checkout -b "update-go-org-to-$tag" origin/master || git reset --hard origin/master
 git pull
-go get "github.com/niklasfasching/go-org@$tag" || exit 1
-sed -i "\_github.com/niklasfasching/go-org ${hugo_tag}_d" go.sum
+go get "github.com/dancewhale/go-org@$tag" || exit 1
+sed -i "\_github.com/dancewhale/go-org ${hugo_tag}_d" go.sum
 git commit -a -m "deps: Update go-org to $tag"
 git push --force-with-lease

@@ -13,8 +13,8 @@ import (
 	"github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/alecthomas/chroma/v2/lexers"
 	"github.com/alecthomas/chroma/v2/styles"
-	"github.com/niklasfasching/go-org/blorg"
-	"github.com/niklasfasching/go-org/org"
+	"github.com/dancewhale/go-org/blorg"
+	"github.com/dancewhale/go-org/org"
 )
 
 var usage = `Usage: go-org COMMAND [ARGS]...

@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/niklasfasching/go-org/org"
+	"github.com/dancewhale/go-org/org"
 )
 
 type Page struct {
