@@ -64,6 +64,7 @@ type token struct {
 
 var lexFns = []lexFn{
 	lexHeadline,
+	lexTaskTime,
 	lexDrawer,
 	lexBlock,
 	lexResult,
@@ -222,6 +223,8 @@ func (d *Document) parseOne(i int, stop stopFn) (consumed int, node Node) {
 		consumed, node = d.parseResult(i, stop)
 	case "beginDrawer":
 		consumed, node = d.parseDrawer(i, stop)
+	case "taskTime":
+		consumed, node = d.parseTaskTime(i, stop)
 	case "text":
 		consumed, node = d.parseParagraph(i, stop)
 	case "example":

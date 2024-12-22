@@ -14,9 +14,20 @@ type PropertyDrawer struct {
 	Properties [][]string
 }
 
+type LogBookDrawer struct {
+	Clocks []Clock
+}
+
+type Clock struct {
+	Start string
+	End   string
+}
+
 var beginDrawerRegexp = regexp.MustCompile(`^(\s*):(\S+):\s*$`)
 var endDrawerRegexp = regexp.MustCompile(`(?i)^(\s*):END:\s*$`)
 var propertyRegexp = regexp.MustCompile(`^(\s*):(\S+):(\s+(.*)$|$)`)
+
+var logBookClockRegexp = regexp.MustCompile(`^\s*CLOCK:\s+\[(\d{4}-\d{2}-\d{2}\s+\w{3}\s+\d{2}:\d{2})\]-+\[(\d{4}-\d{2}-\d{2}\s+\w{3}\s+\d{2}:\d{2})\]`)
 
 func lexDrawer(line string) (token, bool) {
 	if m := endDrawerRegexp.FindStringSubmatch(line); m != nil {
@@ -31,6 +42,8 @@ func (d *Document) parseDrawer(i int, parentStop stopFn) (int, Node) {
 	name := strings.ToUpper(d.tokens[i].content)
 	if name == "PROPERTIES" {
 		return d.parsePropertyDrawer(i, parentStop)
+	} else if name == "LOGBOOK" {
+		return d.parseLogBookClock(i, parentStop)
 	}
 	drawer, start := Drawer{Name: name}, i
 	i++
@@ -81,6 +94,28 @@ func (d *Document) parsePropertyDrawer(i int, parentStop stopFn) (int, Node) {
 	return i - start, drawer
 }
 
+func (d *Document) parseLogBookClock(i int, parentStop stopFn) (int, Node) {
+	drawer, start := LogBookDrawer{}, i
+	i++
+	stop := func(d *Document, i int) bool {
+		return parentStop(d, i) || (d.tokens[i].kind != "text" && d.tokens[i].kind != "beginDrawer")
+	}
+	for ; !stop(d, i); i++ {
+		m := logBookClockRegexp.FindStringSubmatch(d.tokens[i].matches[0])
+		if m == nil {
+			return 0, nil
+		}
+		clock := Clock{Start: m[1], End: m[2]}
+		drawer.Clocks = append(drawer.Clocks, clock)
+	}
+	if i < len(d.tokens) && d.tokens[i].kind == "endDrawer" {
+		i++
+	} else {
+		return 0, nil
+	}
+	return i - start, drawer
+}
+
 func (d *PropertyDrawer) Get(key string) (string, bool) {
 	if d == nil {
 		return "", false
@@ -95,3 +130,5 @@ func (d *PropertyDrawer) Get(key string) (string, bool) {
 
 func (n Drawer) String() string         { return String(n) }
 func (n PropertyDrawer) String() string { return String(n) }
+func (n Clock) String() string          { return String(n) }
+func (n LogBookDrawer) String() string  { return String(n) }

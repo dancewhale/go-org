@@ -26,6 +26,8 @@ type Headline struct {
 	IsComment  bool
 	Priority   string
 	Properties *PropertyDrawer
+	LogBook    *LogBookDrawer
+	TaskTime   *TaskTime
 	Title      []Node
 	Tags       []string
 	Children   []Node
@@ -75,10 +77,19 @@ func (d *Document) parseHeadline(i int, parentStop stopFn) (int, Node) {
 		return parentStop(d, i) || d.tokens[i].kind == "headline" && len(d.tokens[i].matches[1]) <= headline.Lvl
 	}
 	consumed, nodes := d.parseMany(i+1, stop)
-	if len(nodes) > 0 {
-		if d, ok := nodes[0].(PropertyDrawer); ok {
+	for i, node := range nodes {
+		if d, ok := node.(PropertyDrawer); ok {
 			headline.Properties = &d
-			nodes = nodes[1:]
+			continue
+		} else if t, ok := node.(TaskTime); ok {
+			headline.TaskTime = &t
+			continue
+		} else if l, ok := node.(LogBookDrawer); ok {
+			headline.LogBook = &l
+			continue
+		} else {
+			nodes = nodes[i:]
+			break
 		}
 	}
 	headline.Children = nodes
