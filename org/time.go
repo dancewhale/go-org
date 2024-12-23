@@ -2,6 +2,7 @@ package org
 
 import (
 	"regexp"
+	"time"
 )
 
 type TaskTime struct {
@@ -37,3 +38,27 @@ func (d *Document) parseTaskTime(i int, parentStop stopFn) (int, Node) {
 }
 
 func (n TaskTime) String() string { return String(n) }
+
+func (n TaskTime) GetScheduled() *time.Time {
+	if n.Scheduled == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02 Mon", n.Scheduled)
+	if err != nil {
+		return nil
+	} else {
+		return &t
+	}
+}
+
+func (n TaskTime) GetDeadline() *time.Time {
+	if n.Deadline == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02 Mon", n.Deadline)
+	if err != nil {
+		return nil
+	} else {
+		return &t
+	}
+}

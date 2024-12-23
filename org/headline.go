@@ -27,7 +27,7 @@ type Headline struct {
 	Priority   string
 	Properties *PropertyDrawer
 	LogBook    *LogBookDrawer
-	TaskTime   *TaskTime
+	TaskTime   TaskTime
 	Title      []Node
 	Tags       []string
 	Children   []Node
@@ -82,7 +82,7 @@ func (d *Document) parseHeadline(i int, parentStop stopFn) (int, Node) {
 			headline.Properties = &d
 			continue
 		} else if t, ok := node.(TaskTime); ok {
-			headline.TaskTime = &t
+			headline.TaskTime = t
 			continue
 		} else if l, ok := node.(LogBookDrawer); ok {
 			headline.LogBook = &l

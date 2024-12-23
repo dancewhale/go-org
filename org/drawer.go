@@ -3,6 +3,7 @@ package org
 import (
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Drawer struct {
@@ -132,3 +133,25 @@ func (n Drawer) String() string         { return String(n) }
 func (n PropertyDrawer) String() string { return String(n) }
 func (n Clock) String() string          { return String(n) }
 func (n LogBookDrawer) String() string  { return String(n) }
+
+func (n Clock) GetStart() *time.Time {
+	if n.Start == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02 Mon 15:04", n.Start)
+	if err != nil {
+		return nil
+	}
+	return &t
+}
+
+func (n Clock) GetEnd() *time.Time {
+	if n.End == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02 Mon 15:04", n.End)
+	if err != nil {
+		return nil
+	}
+	return &t
+}
