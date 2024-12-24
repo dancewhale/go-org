@@ -23,6 +23,8 @@ type Writer interface {
 	WriteInlineBlock(InlineBlock)
 	WriteExample(Example)
 	WriteDrawer(Drawer)
+	WriteTaskTime(TaskTime)
+	WriteLogBookDrawer(LogBookDrawer)
 	WritePropertyDrawer(PropertyDrawer)
 	WriteList(List)
 	WriteListItem(ListItem)
@@ -69,10 +71,14 @@ func WriteNodes(w Writer, nodes ...Node) {
 			w.WriteInlineBlock(n)
 		case Example:
 			w.WriteExample(n)
+		case TaskTime:
+			w.WriteTaskTime(n)
 		case Drawer:
 			w.WriteDrawer(n)
 		case PropertyDrawer:
 			w.WritePropertyDrawer(n)
+		case LogBookDrawer:
+			w.WriteLogBookDrawer(n)
 		case List:
 			w.WriteList(n)
 		case ListItem:

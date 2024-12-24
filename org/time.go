@@ -8,15 +8,19 @@ import (
 type TaskTime struct {
 	Scheduled string
 	Deadline  string
+	Closed    string
 }
 
 var taskTimeRegexp = regexp.MustCompile(`(?i)^\s*((SCHEDULED|DEADLINE):\s*<\d{4}-\d{2}-\d{2}\s+\w+>\s*)+$`)
 
+var closedRegexp = regexp.MustCompile(`(?i)^\s*CLOSED:\s*\[(\d{4}-\d{2}-\d{2}\s+\w+\s+{\d}2:{\d}2)\]\s*`)
 var scheduledRegexp = regexp.MustCompile(`(?i)^\s*SCHEDULED:\s*<(\d{4}-\d{2}-\d{2}\s+\w+)>\s*`)
 var deadlineRegexp = regexp.MustCompile(`(?i)^\s*DEADLINE:\s*<(\d{4}-\d{2}-\d{2}\s+\w+)>\s*`)
 
 func lexTaskTime(line string) (token, bool) {
 	if m := taskTimeRegexp.FindStringSubmatch(line); m != nil {
+		return token{"taskTime", len(m[1]), m[0], m}, true
+	} else if m := closedRegexp.FindStringSubmatch(line); m != nil {
 		return token{"taskTime", len(m[1]), m[0], m}, true
 	}
 	return nilToken, false
@@ -32,6 +36,9 @@ func (d *Document) parseTaskTime(i int, parentStop stopFn) (int, Node) {
 	}
 	if m := deadlineRegexp.FindStringSubmatch(timeContent); m != nil {
 		taskTime.Deadline = m[1]
+	}
+	if m := closedRegexp.FindStringSubmatch(timeContent); m != nil {
+		taskTime.Closed = m[1]
 	}
 	return 1, taskTime
 
@@ -56,6 +63,18 @@ func (n TaskTime) GetDeadline() *time.Time {
 		return nil
 	}
 	t, err := time.Parse("2006-01-02 Mon", n.Deadline)
+	if err != nil {
+		return nil
+	} else {
+		return &t
+	}
+}
+
+func (n TaskTime) GetClosed() *time.Time {
+	if n.Closed == "" {
+		return nil
+	}
+	t, err := time.Parse("2006-01-02 Mon 12:03", n.Closed)
 	if err != nil {
 		return nil
 	} else {

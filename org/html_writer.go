@@ -208,6 +208,14 @@ func (w *HTMLWriter) WriteDrawer(d Drawer) {
 	WriteNodes(w, d.Children...)
 }
 
+func (w *HTMLWriter) WriteTaskTime(t TaskTime) {
+	w.WriteString("")
+}
+
+func (w *HTMLWriter) WriteLogBookDrawer(l LogBookDrawer) {
+	w.WriteString("")
+}
+
 func (w *HTMLWriter) WriteKeyword(k Keyword) {
 	if k.Key == "HTML" {
 		w.WriteString(k.Value + "\n")

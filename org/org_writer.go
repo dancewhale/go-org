@@ -143,6 +143,32 @@ func (w *OrgWriter) WriteDrawer(d Drawer) {
 	w.WriteString(w.indent + ":END:\n")
 }
 
+func (w *OrgWriter) WriteTaskTime(t TaskTime) {
+	if t.Scheduled == "" && t.Deadline == "" && t.Closed == "" {
+		w.WriteString("")
+	} else {
+		w.WriteString("w.indent")
+		if t.Scheduled != "" {
+			w.WriteString("SCHEDULED: " + "<" + t.Scheduled + ">" + "    ")
+		}
+		if t.Deadline != "" {
+			w.WriteString("DEADLINE: " + "<" + t.Deadline + ">")
+		}
+		if t.Closed != "" {
+			w.WriteString("CLOSED: " + "[" + t.Closed + "]")
+		}
+		w.WriteString("\n")
+	}
+}
+
+func (w *OrgWriter) WriteLogBookDrawer(l LogBookDrawer) {
+	w.WriteString(w.indent + ":LOGBOOK:\n")
+	for _, c := range l.Clocks {
+		w.WriteString(fmt.Sprintf("CLOCK: [%s]--[%s]\n", c.Start, c.End))
+	}
+	w.WriteString(w.indent + ":END:\n")
+}
+
 func (w *OrgWriter) WritePropertyDrawer(d PropertyDrawer) {
 	w.WriteString(":PROPERTIES:\n")
 	for _, kvPair := range d.Properties {
